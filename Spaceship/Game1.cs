@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace Spaceship
 {
@@ -68,6 +69,11 @@ namespace Spaceship
             {
                 gameController.asteroids[i].asteroidUpdate(gameTime);
 
+                if (gameController.asteroids[i].position.X < (0 - gameController.asteroids[i].radius))
+                {
+                    gameController.asteroids[i].offscreen = true;
+                }
+
                 int sum = gameController.asteroids[i].radius + 30;
                 if (Vector2.Distance(gameController.asteroids[i].position, player.position) < sum)
                 {
@@ -77,6 +83,8 @@ namespace Spaceship
                     gameController.asteroids.Clear();
                 }
             }
+
+            gameController.asteroids.RemoveAll(a => a.offscreen);
 
             base.Update(gameTime);
         }
@@ -103,6 +111,8 @@ namespace Spaceship
                 int tempRadius = gameController.asteroids[i].radius;
                 spriteBatch.Draw(asteroid_Sprite, new Vector2(tempPos.X - tempRadius, tempPos.Y - tempRadius), Color.White);
             }
+
+            spriteBatch.DrawString(timerFont, "Time: " + Math.Floor(gameController.totalTime).ToString(), new Vector2(3, 3), Color.White);
 
             spriteBatch.End();
 
